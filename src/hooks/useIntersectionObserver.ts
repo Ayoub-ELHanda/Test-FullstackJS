@@ -10,24 +10,23 @@ export function useIntersectionObserver(
   callbackRef.current = onIntersect; // update on every render
 
   useEffect(() => {
-    if (!enabled) return; // don't observe when loading or no more results
+    if (!enabled) return; 
 
     const el = elementRef.current;
-    if (!el) return; // element not mounted yet
+    if (!el) return; 
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // entry.isIntersecting is true when the element enters the viewport
         if (entry.isIntersecting) {
-          callbackRef.current(); // call loadMore
+          callbackRef.current(); 
         }
       },
-      { threshold: 0.1 } // fire when at least 10% of the element is visible
+      { threshold: 0.1 } 
     );
 
     observer.observe(el);
 
-    //disconnect the observer when enabled changes or component unmounts
+    //disconnect 
     return () => observer.disconnect();
 
   }, [enabled]);

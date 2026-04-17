@@ -1,6 +1,6 @@
 interface Props {
   value: string;
-  onChange: (value: string) => void; // called every time the user types a character
+  onChange: (value: string) => void;
 }
 
 // Controlled input component for searching GitHub users
@@ -13,9 +13,9 @@ export function SearchInput({ value, onChange }: Props) {
         placeholder="Search input"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        aria-label="Search GitHub users" // for screen readers
-        autoComplete="off" // disable browser suggestions
-        spellCheck={false} // no red underlines on usernames
+        aria-label="Search GitHub users"
+        autoComplete="off"
+        spellCheck={false}
       />
     </div>
   );
