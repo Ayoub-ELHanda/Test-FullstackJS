@@ -1,111 +1,389 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+/* ── Reset & base ─────────────────────────────────────────── */
+*, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #ffffff;
+  color: #1a1a1a;
+  min-height: 100dvh;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
+/* ── App shell ────────────────────────────────────────────── */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.app-header {
+  height: 64px;
+  background: #6b6b6b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* ── Edit mode toggle (top-right, absolute) ───────────────── */
+.edit-mode-btn {
+  position: absolute;
+  right: 20px;
+  padding: 5px 14px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: transparent;
+  color: #fff;
+  font-size: 0.82rem;
   font-weight: 500;
-  color: var(--text-h);
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+.edit-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
+.edit-mode-btn--active {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #fff;
+}
+
+/* ── Main layout ──────────────────────────────────────────── */
+.app-main {
+  width: 100%;
+  padding: 28px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Search ───────────────────────────────────────────────── */
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.search-input-wrapper {
+  width: 52%;
+  min-width: 260px;
+  max-width: 600px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.97rem;
+  background: #e0e0e0;
+  color: #1a1a1a;
+  outline: none;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.search-input::placeholder {
+  color: #888;
+}
+
+.search-input:focus {
+  background: #d8d8d8;
+  box-shadow: 0 0 0 2px rgba(30, 120, 220, 0.25);
+}
+
+/* ── Toolbar ──────────────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 2px;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Custom styled checkbox to match the blue filled look in mock */
+.toolbar-select-all input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #1a78e8;
+  border-radius: 3px;
+}
+
+.toolbar-count {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 5px;
+  border: 1px solid #c0c0c0;
+  background: #ffffff;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.toolbar-btn:not(:disabled):hover {
+  background: #f0f0f0;
+  color: #1a1a1a;
+}
+
+.toolbar-btn--delete:not(:disabled):hover {
+  background: #fff0f0;
+  border-color: #d9534f;
+  color: #d9534f;
+}
+
+/* ── Grid outer container (bordered box from mock) ────────── */
+.grid-container {
+  border: 1px solid #c0c0c0;
   border-radius: 4px;
-  color: var(--text-h);
+  background: #f5f5f5;
+  padding: 16px;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* ── User grid ────────────────────────────────────────────── */
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (min-width: 500px) {
+  .user-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 700px) {
+  .user-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .user-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 1300px) {
+  .user-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* ── User card ────────────────────────────────────────────── */
+.user-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 12px 14px;
+  background: #d0d0d0;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  transition: border-color 0.12s;
+  min-width: 0;
+}
+
+.user-card--selected {
+  border-color: #1a78e8;
+}
+
+/* Checkbox — top-left corner of card */
+.user-card-checkbox {
+  position: absolute;
+  top: 8px;
+  left: 9px;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.user-card-checkbox input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  accent-color: #1a78e8;
+  border-radius: 3px;
+}
+
+/* Avatar circle */
+.user-card-avatar {
+  margin-top: 6px;
+}
+
+.user-card-avatar-img {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* Fallback teal background shown in mock for users without avatar */
+  background: #26c6da;
+  display: block;
+}
+
+/* ID */
+.user-card-id {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-top: 2px;
+}
+
+/* Login */
+.user-card-login {
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* "View profile" button — full width, blue */
+.user-card-link {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px 0;
+  border-radius: 5px;
+  background: #1a78e8;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: center;
+  transition: background 0.12s;
+  white-space: nowrap;
+}
+
+.user-card-link:hover {
+  background: #1563c7;
+}
+
+/* ── Skeleton cards ───────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.skeleton-card {
+  pointer-events: none;
+}
+
+.skeleton-avatar,
+.skeleton-line,
+.skeleton-btn {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #c8c8c8 25%, #d8d8d8 50%, #c8c8c8 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.skeleton-avatar {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  margin-top: 6px;
+}
+
+.skeleton-line {
+  height: 10px;
+  margin-top: 4px;
+}
+
+.skeleton-line--short  { width: 40%; }
+.skeleton-line--long   { width: 65%; }
+
+.skeleton-btn {
+  width: 100%;
+  height: 30px;
+  border-radius: 5px;
+  margin-top: 8px;
+}
+
+/* ── Status / feedback messages ───────────────────────────── */
+.status-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 56px 16px;
+  color: #666;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.status-message--error {
+  color: #c0392b;
+}
+
+/* ── Infinite scroll sentinel & load-more indicator ──────── */
+.sentinel {
+  height: 1px;
+}
+
+.load-more-indicator {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+
+/* ── Spinner ──────────────────────────────────────────────── */
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #d0d0d0;
+  border-top-color: #1a78e8;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
