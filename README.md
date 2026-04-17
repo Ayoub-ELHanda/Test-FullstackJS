@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# Github User Search
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React app to search GitHub users using the GitHub Search API.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Vite + React + TypeScript
+- No UI libraries — CSS from scratch
+- Vitest + Testing Library for tests
 
-## React Compiler
+## Getting started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Search as you type (debounced 400ms)
+- Infinite scroll to load more results
+- Request caching — same query won't hit the API twice
+- Handles edge cases: no results, rate limit, network error, rapid typing
+- Edit mode: select cards, then duplicate or delete them
+- Responsive grid (2 to 6 columns depending on screen width)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project structure
+
 ```
+src/
+  components/
+    SearchInput/     # controlled text input
+    UserCard/        # single result card
+    UserGrid/        # grid + status states (skeleton, error, no results)
+    Toolbar/         # select-all, duplicate, delete actions
+  hooks/
+    useDebounce             # delays the search until typing stops
+    useGithubSearch         # fetches from GitHub, manages cache + AbortController
+    useIntersectionObserver # triggers loadMore when scrolled to bottom
+  types/
+    github.ts        # TypeScript interfaces for the GitHub API
+```
+
+## Tests
+
+```bash
+npm test           # watch mode
+npm run test:run   # run once and exit
+```
+
+A git pre-push hook runs the tests automatically before every push. If tests fail, the push is blocked.
+
+## Notes
+
+- `userItems` (local list) is kept separate from the API data so duplicate/delete don't trigger a re-fetch
+- Cards get a `key` field distinct from `id` so duplicated cards don't confuse React
+- `effectiveQuery` falls back to `followers:>1000` when the input is under 2 characters, so the page isn't empty on load
